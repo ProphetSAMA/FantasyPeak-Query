@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="h-full bg-gray-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - Minecraft 服务器查询</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            minecraft: {
+              grass: '#5D8C3E',
+              dirt: '#8B6B3D',
+              stone: '#7F7F7F',
+              diamond: '#4AEDD9',
+              gold: '#FCDB05',
+              redstone: '#FF0000',
+              emerald: '#17DD62',
+              creeper: '#0DA70B'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    .font-minecraft {
+      font-family: 'Press Start 2P', cursive;
+    }
+  </style>
+</head>
+<body class="h-full">
+  <div class="min-h-full">
+    <!-- 导航栏 -->
+    <nav class="bg-minecraft-grass shadow-lg">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <a href="/" class="font-minecraft text-white text-xl hover:text-minecraft-diamond transition-colors">
+                MC Query
+              </a>
+            </div>
+            <div class="hidden md:block">
+              <div class="ml-10 flex items-baseline space-x-4">
+                <a href="/" class="<%= currentPath === '/' ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  首页
+                </a>
+                <a href="/player" class="<%= currentPath.startsWith('/player') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  玩家列表
+                </a>
+                <a href="/bans" class="<%= currentPath.startsWith('/bans') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  封禁记录
+                </a>
+                <% if (user) { %>
+                  <a href="/admin" class="<%= currentPath.startsWith('/admin') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                    管理后台
+                  </a>
+                <% } %>
+              </div>
+            </div>
+          </div>
+          <div class="hidden md:block">
+            <div class="ml-4 flex items-center md:ml-6">
+              <!-- 搜索框 -->
+              <form action="/player/search" method="GET" class="mr-4">
+                <div class="relative">
+                  <input type="text" name="keyword" placeholder="搜索玩家..." class="w-64 rounded-lg bg-white/20 px-4 py-2 text-white placeholder-white/70 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500 transition-all outline-none">
+                  <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </button>
+                </div>
+              </form>
+              <% if (user) { %>
+                <a href="/admin/logout" class="text-white hover:bg-red-600 rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  登出
+                </a>
+              <% } else { %>
+                <a href="/admin/login" class="text-white hover:bg-minecraft-dirt rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  管理登录
+                </a>
+              <% } %>
+            </div>
+          </div>
+          <!-- 移动端菜单按钮 -->
+          <div class="-mr-2 flex md:hidden">
+            <button type="button" class="inline-flex items-center justify-center rounded-md bg-minecraft-dirt p-2 text-white hover:bg-minecraft-stone focus:outline-none" id="mobile-menu-button">
+              <span class="sr-only">打开菜单</span>
+              <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 移动端菜单 -->
+      <div class="hidden md:hidden" id="mobile-menu">
+        <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+          <a href="/" class="<%= currentPath === '/' ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
+            首页
+          </a>
+          <a href="/player" class="<%= currentPath.startsWith('/player') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
+            玩家列表
+          </a>
+          <a href="/bans" class="<%= currentPath.startsWith('/bans') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
+            封禁记录
+          </a>
+          <% if (user) { %>
+            <a href="/admin" class="<%= currentPath.startsWith('/admin') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
+              管理后台
+            </a>
+            <a href="/admin/logout" class="text-white hover:bg-red-600 block rounded-md px-3 py-2 text-base font-medium">
+              登出
+            </a>
+          <% } else { %>
+            <a href="/admin/login" class="text-white hover:bg-minecraft-dirt block rounded-md px-3 py-2 text-base font-medium">
+              管理登录
+            </a>
+          <% } %>
+        </div>
+        <!-- 移动端搜索 -->
+        <div class="border-t border-minecraft-dirt px-4 pb-3 pt-2">
+          <form action="/player/search" method="GET">
+            <input type="text" name="keyword" placeholder="搜索玩家..." class="w-full rounded-lg bg-white/20 px-4 py-2 text-white placeholder-white/70 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500 transition-all outline-none">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main>
+      <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">

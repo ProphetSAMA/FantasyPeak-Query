@@ -1,0 +1,244 @@
+<%- include('partials/header') %>
+
+<!-- 统计卡片 -->
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+  <!-- 总玩家数 -->
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="p-5">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-grass">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="ml-5 w-0 flex-1">
+          <dl>
+            <dt class="truncate text-sm font-medium text-gray-500">总玩家数</dt>
+            <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= stats.totalPlayers %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 在线玩家 -->
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="p-5">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-emerald">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="ml-5 w-0 flex-1">
+          <dl>
+            <dt class="truncate text-sm font-medium text-gray-500">在线玩家</dt>
+            <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= stats.onlinePlayers %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 传送点数量 -->
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="p-5">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-diamond">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="ml-5 w-0 flex-1">
+          <dl>
+            <dt class="truncate text-sm font-medium text-gray-500">传送点</dt>
+            <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= stats.totalWarps %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 家数量 -->
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="p-5">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-gold">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+          </div>
+        </div>
+        <div class="ml-5 w-0 flex-1">
+          <dl>
+            <dt class="truncate text-sm font-medium text-gray-500">玩家家</dt>
+            <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= stats.totalHomes %></dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 内容区域 -->
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+  <!-- 在线玩家 -->
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">
+        <span class="inline-flex items-center">
+          <span class="mr-2 h-2 w-2 rounded-full bg-minecraft-emerald animate-pulse"></span>
+          在线玩家
+        </span>
+      </h3>
+      <% if (onlinePlayers && onlinePlayers.length > 0) { %>
+        <div class="flow-root">
+          <ul role="list" class="-my-5 divide-y divide-gray-200">
+            <% onlinePlayers.forEach(function(player) { %>
+              <li class="py-4">
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0">
+                    <img class="h-8 w-8 rounded-full" src="https://mc-heads.net/avatar/<%= player.UUID %>/32" alt="<%= player.userName %>">
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium text-gray-900">
+                      <a href="/player/<%= player.UUID %>" class="hover:text-minecraft-grass transition-colors">
+                        <%= player.userName %>
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
+        <div class="mt-6">
+          <a href="/player" class="flex w-full items-center justify-center rounded-md border border-minecraft-grass px-4 py-2 text-sm font-medium text-minecraft-grass hover:bg-minecraft-grass hover:text-white transition-colors">
+            查看所有玩家
+          </a>
+        </div>
+      <% } else { %>
+        <p class="text-gray-500 text-center py-4">当前没有在线玩家</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- 最近登录 -->
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">最近登录</h3>
+      <% if (recentLogins && recentLogins.length > 0) { %>
+        <div class="flow-root">
+          <ul role="list" class="-my-5 divide-y divide-gray-200">
+            <% recentLogins.forEach(function(player) { %>
+              <li class="py-4">
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0">
+                    <img class="h-8 w-8 rounded-full" src="https://mc-heads.net/avatar/<%= player.userName %>/32" alt="<%= player.userName %>">
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium text-gray-900">
+                      <a href="/player/search?keyword=<%= player.userName %>" class="hover:text-minecraft-grass transition-colors">
+                        <%= player.userName %>
+                      </a>
+                    </p>
+                    <p class="truncate text-sm text-gray-500">
+                      最后在线: <%= new Date(player.lastOnline).toLocaleString('zh-CN') %>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } else { %>
+        <p class="text-gray-500 text-center py-4">暂无登录记录</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- 新注册玩家 -->
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">
+        <span class="inline-flex items-center">
+          <svg class="mr-2 h-5 w-5 text-minecraft-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          本周新玩家
+        </span>
+      </h3>
+      <% if (newPlayers && newPlayers.length > 0) { %>
+        <div class="flow-root">
+          <ul role="list" class="-my-5 divide-y divide-gray-200">
+            <% newPlayers.forEach(function(player) { %>
+              <li class="py-4">
+                <div class="flex items-center space-x-4">
+                  <div class="flex-shrink-0">
+                    <img class="h-8 w-8 rounded-full" src="https://mc-heads.net/avatar/<%= player.userName %>/32" alt="<%= player.userName %>">
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <p class="truncate text-sm font-medium text-gray-900">
+                      <a href="/player/search?keyword=<%= player.userName %>" class="hover:text-minecraft-grass transition-colors">
+                        <%= player.userName %>
+                      </a>
+                    </p>
+                    <p class="truncate text-sm text-gray-500">
+                      注册时间: <%= new Date(player.firstJoin).toLocaleString('zh-CN') %>
+                    </p>
+                  </div>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+        </div>
+      <% } else { %>
+        <p class="text-gray-500 text-center py-4">本周暂无新玩家</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- 快速链接 -->
+  <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="px-4 py-5 sm:p-6">
+      <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">快速链接</h3>
+      <div class="grid grid-cols-2 gap-4">
+        <a href="/player" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-minecraft-grass hover:bg-gray-50 transition-colors">
+          <svg class="h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span class="text-sm font-medium text-gray-900">玩家列表</span>
+        </a>
+        <a href="/bans" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-minecraft-redstone hover:bg-gray-50 transition-colors">
+          <svg class="h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+          </svg>
+          <span class="text-sm font-medium text-gray-900">封禁记录</span>
+        </a>
+        <a href="/api/stats" target="_blank" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-minecraft-diamond hover:bg-gray-50 transition-colors">
+          <svg class="h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          <span class="text-sm font-medium text-gray-900">API 接口</span>
+        </a>
+        <a href="/bans/mutes" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-minecraft-gold hover:bg-gray-50 transition-colors">
+          <svg class="h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+          <span class="text-sm font-medium text-gray-900">禁言记录</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

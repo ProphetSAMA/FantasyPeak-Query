@@ -1,0 +1,202 @@
+<%- include('partials/header') %>
+
+<div class="space-y-6">
+  <!-- 返回按钮 -->
+  <div>
+    <a href="/player" class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 transition-colors">
+      <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      返回玩家列表
+    </a>
+  </div>
+
+  <!-- 玩家信息卡片 -->
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="px-6 py-8">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <img class="h-24 w-24 rounded-lg shadow-lg" src="https://mc-heads.net/body/<%= player.UUID %>/128" alt="<%= player.userName %>">
+        </div>
+        <div class="ml-6">
+          <h1 class="text-3xl font-bold text-gray-900"><%= player.userName %></h1>
+          <p class="mt-1 text-sm text-gray-500">UUID: <%= player.UUID %></p>
+          <div class="mt-4 flex items-center space-x-4">
+            <% if (player.online) { %>
+              <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-sm font-medium text-green-800">
+                <span class="mr-2 h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
+                在线
+              </span>
+            <% } else { %>
+              <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-800">
+                离线
+              </span>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 详细信息 -->
+    <div class="border-t border-gray-200 px-6 py-6">
+      <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">首次登录</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= new Date(player.firstJoin).toLocaleString('zh-CN') %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">最后在线</dt>
+          <dd class="mt-1 text-sm text-gray-900"><%= new Date(player.lastOnline).toLocaleString('zh-CN') %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">游戏时长</dt>
+          <dd class="mt-1 text-sm text-gray-900">
+            <% if (player.playTime) { %>
+              <% const hours = Math.floor(player.playTime / 3600000); %>
+              <% const minutes = Math.floor((player.playTime % 3600000) / 60000); %>
+              <%= hours %> 小时 <%= minutes %> 分钟
+            <% } else { %>
+              未知
+            <% } %>
+          </dd>
+        </div>
+        <% if (player.lastKnownName) { %>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">上次昵称</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= player.lastKnownName %></dd>
+          </div>
+        <% } %>
+        <% if (player.ip) { %>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">IP 地址</dt>
+            <dd class="mt-1 text-sm text-gray-900"><%= player.ip %></dd>
+          </div>
+        <% } %>
+      </dl>
+    </div>
+  </div>
+
+  <!-- 家位置 -->
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200">
+      <h2 class="text-lg font-medium text-gray-900">
+        <svg class="inline-block mr-2 h-5 w-5 text-minecraft-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+        家位置
+      </h2>
+    </div>
+    <div class="px-6 py-4">
+      <% if (player.homes && player.homes.length > 0) { %>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <% player.homes.forEach(function(home) { %>
+            <div class="border border-gray-200 rounded-lg p-4 hover:border-minecraft-grass transition-colors">
+              <h3 class="text-sm font-medium text-gray-900"><%= home.name %></h3>
+              <p class="mt-1 text-xs text-gray-500">
+                世界: <%= home.world %>
+              </p>
+              <p class="mt-1 text-xs text-gray-500">
+                坐标: (<%= Math.round(home.x) %>, <%= Math.round(home.y) %>, <%= Math.round(home.z) %>)
+              </p>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p class="text-gray-500 text-center py-4">该玩家没有设置家位置</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- 封禁记录 -->
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200">
+      <h2 class="text-lg font-medium text-gray-900">
+        <svg class="inline-block mr-2 h-5 w-5 text-minecraft-redstone" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+        </svg>
+        封禁记录
+      </h2>
+    </div>
+    <div class="px-6 py-4">
+      <% if (bans && bans.length > 0) { %>
+        <div class="space-y-4">
+          <% bans.forEach(function(ban) { %>
+            <div class="border-l-4 border-red-400 bg-red-50 p-4 rounded-r-lg">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-red-800">
+                    封禁原因: <%= ban.reason || '未指定' %>
+                  </h3>
+                  <div class="mt-2 text-sm text-red-700">
+                    <p>封禁时间: <%= new Date(ban.banTime).toLocaleString('zh-CN') %></p>
+                    <p>封禁者: <%= ban.bannedBy || '控制台' %></p>
+                    <% if (ban.duration && ban.duration > 0) { %>
+                      <p>时长: <%= Math.floor(ban.duration / 3600000) %> 小时</p>
+                    <% } else if (ban.duration === -1) { %>
+                      <p>时长: 永久</p>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p class="text-gray-500 text-center py-4">该玩家没有封禁记录</p>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- 禁言记录 -->
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <div class="px-6 py-5 border-b border-gray-200">
+      <h2 class="text-lg font-medium text-gray-900">
+        <svg class="inline-block mr-2 h-5 w-5 text-minecraft-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+        </svg>
+        禁言记录
+      </h2>
+    </div>
+    <div class="px-6 py-4">
+      <% if (mutes && mutes.length > 0) { %>
+        <div class="space-y-4">
+          <% mutes.forEach(function(mute) { %>
+            <div class="border-l-4 border-yellow-400 bg-yellow-50 p-4 rounded-r-lg">
+              <div class="flex">
+                <div class="flex-shrink-0">
+                  <svg class="h-5 w-5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                </div>
+                <div class="ml-3">
+                  <h3 class="text-sm font-medium text-yellow-800">
+                    禁言原因: <%= mute.reason || '未指定' %>
+                  </h3>
+                  <div class="mt-2 text-sm text-yellow-700">
+                    <p>禁言时间: <%= new Date(mute.muteTime).toLocaleString('zh-CN') %></p>
+                    <p>禁言者: <%= mute.mutedBy || '控制台' %></p>
+                    <% if (mute.duration && mute.duration > 0) { %>
+                      <p>时长: <%= Math.floor(mute.duration / 3600000) %> 小时</p>
+                    <% } else if (mute.duration === -1) { %>
+                      <p>时长: 永久</p>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p class="text-gray-500 text-center py-4">该玩家没有禁言记录</p>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

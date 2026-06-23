@@ -1,0 +1,161 @@
+<%- include('../partials/header') %>
+
+<div class="space-y-6">
+  <!-- 页面标题 -->
+  <div class="border-b border-gray-200 pb-5">
+    <div class="flex items-center justify-between">
+      <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">
+        封禁管理
+      </h1>
+      <a href="/admin" class="inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        返回管理后台
+      </a>
+    </div>
+  </div>
+
+  <!-- 封禁列表 -->
+  <div class="bg-white shadow rounded-lg overflow-hidden">
+    <% if (bans && bans.length > 0) { %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                玩家
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                原因
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                封禁者
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                时间
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                时长
+              </th>
+              <th scope="col" class="relative px-6 py-3">
+                <span class="sr-only">操作</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <% bans.forEach(function(ban) { %>
+              <tr class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10">
+                      <img class="h-10 w-10 rounded-full" src="https://mc-heads.net/avatar/<%= ban.UUID %>/40" alt="<%= ban.UUID %>">
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">
+                        <a href="/player/<%= ban.UUID %>" class="hover:text-minecraft-grass transition-colors">
+                          <%= ban.UUID %>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="text-sm text-gray-900"><%= ban.reason || '未指定' %></div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= ban.bannedBy || '控制台' %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= new Date(ban.banTime).toLocaleString('zh-CN') %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <% if (ban.duration && ban.duration > 0) { %>
+                    <%= Math.floor(ban.duration / 3600000) %> 小时
+                  <% } else if (ban.duration === -1) { %>
+                    <span class="text-red-600 font-medium">永久</span>
+                  <% } else { %>
+                    未知
+                  <% } %>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <a href="/player/<%= ban.UUID %>" class="text-minecraft-grass hover:text-minecraft-dirt transition-colors">
+                    查看玩家
+                  </a>
+                </td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 分页 -->
+      <% if (pagination && pagination.pages > 1) { %>
+        <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+          <div class="flex-1 flex justify-between sm:hidden">
+            <% if (pagination.page > 1) { %>
+              <a href="?page=<%= pagination.page - 1 %>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                上一页
+              </a>
+            <% } %>
+            <% if (pagination.page < pagination.pages) { %>
+              <a href="?page=<%= pagination.page + 1 %>" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                下一页
+              </a>
+            <% } %>
+          </div>
+          <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+              <p class="text-sm text-gray-700">
+                显示第 <span class="font-medium"><%= (pagination.page - 1) * pagination.limit + 1 %></span> 到 <span class="font-medium"><%= Math.min(pagination.page * pagination.limit, pagination.total) %></span> 条，共 <span class="font-medium"><%= pagination.total %></span> 条
+              </p>
+            </div>
+            <div>
+              <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <% if (pagination.page > 1) { %>
+                  <a href="?page=<%= pagination.page - 1 %>" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <span class="sr-only">上一页</span>
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </a>
+                <% } %>
+
+                <% for (let i = Math.max(1, pagination.page - 2); i <= Math.min(pagination.pages, pagination.page + 2); i++) { %>
+                  <% if (i === pagination.page) { %>
+                    <span class="relative inline-flex items-center px-4 py-2 border border-minecraft-redstone bg-minecraft-redstone text-sm font-medium text-white">
+                      <%= i %>
+                    </span>
+                  <% } else { %>
+                    <a href="?page=<%= i %>" class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                      <%= i %>
+                    </a>
+                  <% } %>
+                <% } %>
+
+                <% if (pagination.page < pagination.pages) { %>
+                  <a href="?page=<%= pagination.page + 1 %>" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <span class="sr-only">下一页</span>
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                <% } %>
+              </nav>
+            </div>
+          </div>
+        </div>
+      <% } %>
+    <% } else { %>
+      <div class="text-center py-12">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">没有封禁记录</h3>
+        <p class="mt-1 text-sm text-gray-500">暂无封禁数据</p>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
