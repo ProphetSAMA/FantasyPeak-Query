@@ -45,7 +45,7 @@
 
 ```bash
 git clone <repository-url>
-cd minecraft-query
+cd FantasyPeak-Query
 ```
 
 ### 2. 安装依赖
@@ -118,7 +118,7 @@ npm start
 ## 📁 项目结构
 
 ```
-minecraft-query/
+FantasyPeak-Query/
 ├── config/              # 配置文件
 │   ├── database.js      # 数据库统一适配器（MySQL/SQLite 双后端）
 │   ├── db-utils.js      # 数据库兼容工具（跨库 SQL 表达式）
@@ -237,7 +237,7 @@ minecraft-query/
 npm install -g pm2
 
 # 启动应用
-pm2 start app.js --name minecraft-query
+pm2 start app.js --name FantasyPeak-Query
 
 # 设置开机自启
 pm2 startup
