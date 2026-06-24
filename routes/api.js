@@ -54,7 +54,7 @@ router.get('/players/search', validationRules.searchPlayer, handleValidationErro
 });
 
 // API: 获取玩家详情
-router.get('/players/:uuid', validationRules.uuid, handleValidationErrors, async (req, res) => {
+router.get('/players/:uuid', async (req, res) => {
   try {
     const uuid = req.params.uuid;
     const player = await playerService.getPlayerByUUID(uuid);

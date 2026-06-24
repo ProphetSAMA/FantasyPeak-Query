@@ -20,6 +20,11 @@ const validationRules = {
       .withMessage('无效的UUID格式')
   ],
 
+  // UUID参数验证 (路由参数，支持带连字符)
+  uuidParam: [
+    // 在路由中直接验证
+  ],
+
   // UUID参数验证 (用于路由参数)
   uuidParam: [
     // No validation needed for route params, handled in route

@@ -1,14 +1,4 @@
-<%#
-  Pagination Partial Component
-
-  Usage: <%- include('partials/pagination', { pagination: pagination, keyword: keyword, baseUrl: '/player' }) %>
-
-  Parameters:
-  - pagination: { page, limit, total, pages }
-  - keyword: search keyword (optional)
-  - baseUrl: base URL for pagination links (optional, defaults to current path)
-%>
-
+ Pagination Partial Component
 <% if (pagination && pagination.pages > 1) { %>
   <% const base = typeof baseUrl !== 'undefined' ? baseUrl : ''; %>
   <% const kw = typeof keyword !== 'undefined' && keyword ? keyword : ''; %>

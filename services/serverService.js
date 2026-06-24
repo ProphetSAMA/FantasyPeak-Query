@@ -1,20 +1,23 @@
 const { pool } = require('../config/database');
+const { daysAgoTimestamp, dateFromMillis } = require('../config/db-utils');
 const cache = require('./cacheService');
 
 class ServerService {
-  // 获取服务器传送点
+  // 获取服务器传送点（CMI 数据库中无 warps 表，返回空）
   async getWarps() {
     const cacheKey = 'warps_all';
     const cached = cache.get(cacheKey);
     if (cached) return cached;
 
     try {
-      const [rows] = await pool.query('SELECT * FROM cmi_warps ORDER BY name ASC');
-
-      cache.set(cacheKey, rows, 300); // 缓存5分钟
+      // 尝试查询 warps 表（某些 CMI 配置可能有）
+      const [rows] = await pool.query('SELECT * FROM warps ORDER BY name ASC').catch(() => [[]]);
+      cache.set(cacheKey, rows, 300);
       return rows;
-    } catch (error) {
-      throw new Error(`获取传送点失败: ${error.message}`);
+    } catch {
+      // warps 表不存在，返回空数组
+      cache.set(cacheKey, [], 300);
+      return [];
     }
   }
 
@@ -25,19 +28,30 @@ class ServerService {
     if (cached) return cached;
 
     try {
-      const [totalPlayers] = await pool.query('SELECT COUNT(*) as total FROM cmi_users');
-      const [onlinePlayers] = await pool.query('SELECT COUNT(*) as online FROM cmi_users WHERE online = 1');
-      const [totalWarps] = await pool.query('SELECT COUNT(*) as total FROM cmi_warps');
-      const [totalHomes] = await pool.query('SELECT COUNT(*) as total FROM cmi_homes');
+      const [totalPlayers] = await pool.query('SELECT COUNT(*) as total FROM users');
+      const [onlinePlayers] = await pool.query(
+        'SELECT COUNT(*) as online FROM users WHERE LastLoginTime > LastLogoffTime'
+      );
+
+      // warps 和 homes 统计
+      let totalWarps = 0;
+      try {
+        const [w] = await pool.query('SELECT COUNT(*) as total FROM warps');
+        totalWarps = w[0].total;
+      } catch { /* warps 表不存在 */ }
+
+      const [totalHomes] = await pool.query(
+        "SELECT COUNT(*) as total FROM users WHERE Homes IS NOT NULL AND Homes != ''"
+      );
 
       const stats = {
         totalPlayers: totalPlayers[0].total,
         onlinePlayers: onlinePlayers[0].online,
-        totalWarps: totalWarps[0].total,
+        totalWarps,
         totalHomes: totalHomes[0].total
       };
 
-      cache.set(cacheKey, stats, 60); // 缓存60秒
+      cache.set(cacheKey, stats, 60);
       return stats;
     } catch (error) {
       throw new Error(`获取服务器统计失败: ${error.message}`);
@@ -52,30 +66,33 @@ class ServerService {
 
     try {
       const [rows] = await pool.query(
-        'SELECT userName, lastOnline FROM cmi_users ORDER BY lastOnline DESC LIMIT ?',
+        'SELECT player_uuid as UUID, username as userName, LastLoginTime as lastOnline FROM users ORDER BY LastLoginTime DESC LIMIT ?',
         [limit]
       );
 
-      cache.set(cacheKey, rows, 30); // 缓存30秒
+      cache.set(cacheKey, rows, 30);
       return rows;
     } catch (error) {
       throw new Error(`获取最近登录失败: ${error.message}`);
     }
   }
 
-  // 获取新注册玩家
+  // 获取新注册玩家（CMI 无 firstJoin 字段，使用首次登录时间近似）
   async getNewPlayers(days = 7, limit = 10) {
     const cacheKey = `new_players_${days}_${limit}`;
     const cached = cache.get(cacheKey);
     if (cached) return cached;
 
     try {
+      const ago = daysAgoTimestamp(days);
       const [rows] = await pool.query(
-        'SELECT userName, firstJoin FROM cmi_users WHERE firstJoin >= DATE_SUB(NOW(), INTERVAL ? DAY) ORDER BY firstJoin DESC LIMIT ?',
-        [days, limit]
+        `SELECT player_uuid as UUID, username as userName, LastLoginTime as firstJoin
+         FROM users WHERE LastLoginTime >= ${ago.sql}
+         ORDER BY LastLoginTime DESC LIMIT ?`,
+        [...ago.params, limit]
       );
 
-      cache.set(cacheKey, rows, 300); // 缓存5分钟
+      cache.set(cacheKey, rows, 300);
       return rows;
     } catch (error) {
       throw new Error(`获取新玩家失败: ${error.message}`);
@@ -89,43 +106,47 @@ class ServerService {
     if (cached) return cached;
 
     try {
+      const ago = daysAgoTimestamp(days);
+      const dateExpr = dateFromMillis('LastLogoffTime');
       const [rows] = await pool.query(
         `SELECT
-          DATE(FROM_UNIXTIME(lastOnline / 1000)) as date,
+          ${dateExpr} as date,
           COUNT(*) as count
-        FROM cmi_users
-        WHERE lastOnline >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL ? DAY)) * 1000
-        GROUP BY DATE(FROM_UNIXTIME(lastOnline / 1000))
+        FROM users
+        WHERE LastLogoffTime >= ${ago.sql}
+        GROUP BY ${dateExpr}
         ORDER BY date ASC`,
-        [days]
+        ago.params
       );
 
-      cache.set(cacheKey, rows, 300); // 缓存5分钟
+      cache.set(cacheKey, rows, 300);
       return rows;
     } catch (error) {
       throw new Error(`获取活跃度统计失败: ${error.message}`);
     }
   }
 
-  // 获取新玩家注册统计（按天）
+  // 获取新玩家注册统计（按天，基于最后登录时间近似）
   async getNewPlayersStats(days = 30) {
     const cacheKey = `new_players_stats_${days}`;
     const cached = cache.get(cacheKey);
     if (cached) return cached;
 
     try {
+      const ago = daysAgoTimestamp(days);
+      const dateExpr = dateFromMillis('LastLoginTime');
       const [rows] = await pool.query(
         `SELECT
-          DATE(FROM_UNIXTIME(firstJoin / 1000)) as date,
+          ${dateExpr} as date,
           COUNT(*) as count
-        FROM cmi_users
-        WHERE firstJoin >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL ? DAY)) * 1000
-        GROUP BY DATE(FROM_UNIXTIME(firstJoin / 1000))
+        FROM users
+        WHERE LastLoginTime >= ${ago.sql}
+        GROUP BY ${dateExpr}
         ORDER BY date ASC`,
-        [days]
+        ago.params
       );
 
-      cache.set(cacheKey, rows, 300); // 缓存5分钟
+      cache.set(cacheKey, rows, 300);
       return rows;
     } catch (error) {
       throw new Error(`获取新玩家统计失败: ${error.message}`);

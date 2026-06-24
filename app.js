@@ -8,7 +8,7 @@ const rateLimit = require('express-rate-limit');
 const path = require('path');
 require('dotenv').config();
 
-const { testConnection } = require('./config/database');
+const { testConnection, initDatabase } = require('./config/database');
 const config = require('./config/app');
 
 // 路由导入
@@ -140,6 +140,9 @@ app.use((err, req, res, next) => {
 
 // 启动服务器
 async function startServer() {
+  // 初始化数据库（SQLite 建表 / MySQL 无操作）
+  await initDatabase();
+
   // 测试数据库连接
   const dbConnected = await testConnection();
   if (!dbConnected) {

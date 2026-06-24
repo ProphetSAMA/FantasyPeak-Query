@@ -1,4 +1,6 @@
 const { pool } = require('../config/database');
+const { daysAgoTimestamp } = require('../config/db-utils');
+const { parseHomes, parseIps } = require('../config/sqlite-schema');
 const cache = require('./cacheService');
 
 class PlayerService {
@@ -12,15 +14,17 @@ class PlayerService {
 
     try {
       const [rows] = await pool.query(
-        'SELECT * FROM cmi_users ORDER BY lastOnline DESC LIMIT ? OFFSET ?',
+        'SELECT * FROM users ORDER BY LastLogoffTime DESC LIMIT ? OFFSET ?',
         [limit, offset]
       );
 
-      const [countResult] = await pool.query('SELECT COUNT(*) as total FROM cmi_users');
+      const [countResult] = await pool.query('SELECT COUNT(*) as total FROM users');
       const total = countResult[0].total;
 
+      const players = rows.map(r => this._normalizePlayer(r));
+
       const result = {
-        players: rows,
+        players,
         pagination: {
           page,
           limit,
@@ -29,7 +33,7 @@ class PlayerService {
         }
       };
 
-      cache.set(cacheKey, result, 60); // 缓存60秒
+      cache.set(cacheKey, result, 60);
       return result;
     } catch (error) {
       throw new Error(`获取玩家列表失败: ${error.message}`);
@@ -44,25 +48,14 @@ class PlayerService {
 
     try {
       const [rows] = await pool.query(
-        'SELECT * FROM cmi_users WHERE UUID = ?',
+        'SELECT * FROM users WHERE player_uuid = ?',
         [uuid]
       );
 
-      if (rows.length === 0) {
-        return null;
-      }
+      if (rows.length === 0) return null;
 
-      const player = rows[0];
-
-      // 获取玩家的家位置
-      const [homes] = await pool.query(
-        'SELECT * FROM cmi_homes WHERE UUID = ?',
-        [uuid]
-      );
-
-      player.homes = homes;
-
-      cache.set(cacheKey, player, 120); // 缓存120秒
+      const player = this._normalizePlayer(rows[0], true);
+      cache.set(cacheKey, player, 120);
       return player;
     } catch (error) {
       throw new Error(`获取玩家信息失败: ${error.message}`);
@@ -77,30 +70,33 @@ class PlayerService {
 
     try {
       const [rows] = await pool.query(
-        'SELECT * FROM cmi_users WHERE userName LIKE ? ORDER BY lastOnline DESC LIMIT 50',
-        [`%${keyword}%`]
+        "SELECT * FROM users WHERE username LIKE ? OR nickname LIKE ? OR DisplayName LIKE ? ORDER BY LastLogoffTime DESC LIMIT 50",
+        [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`]
       );
 
-      cache.set(cacheKey, rows, 30); // 缓存30秒
-      return rows;
+      const players = rows.map(r => this._normalizePlayer(r));
+      cache.set(cacheKey, players, 30);
+      return players;
     } catch (error) {
       throw new Error(`搜索玩家失败: ${error.message}`);
     }
   }
 
-  // 获取在线玩家
+  // 获取在线玩家（基于最后登录/登出时间判断）
   async getOnlinePlayers() {
     const cacheKey = 'players_online';
     const cached = cache.get(cacheKey);
     if (cached) return cached;
 
     try {
+      // 最后登录时间 > 最后登出时间，视为在线
       const [rows] = await pool.query(
-        'SELECT * FROM cmi_users WHERE online = 1 ORDER BY lastOnline DESC'
+        'SELECT * FROM users WHERE LastLoginTime > LastLogoffTime ORDER BY LastLoginTime DESC'
       );
 
-      cache.set(cacheKey, rows, 10); // 缓存10秒
-      return rows;
+      const players = rows.map(r => this._normalizePlayer(r));
+      cache.set(cacheKey, players, 10);
+      return players;
     } catch (error) {
       throw new Error(`获取在线玩家失败: ${error.message}`);
     }
@@ -113,10 +109,14 @@ class PlayerService {
     if (cached) return cached;
 
     try {
-      const [totalPlayers] = await pool.query('SELECT COUNT(*) as total FROM cmi_users');
-      const [onlinePlayers] = await pool.query('SELECT COUNT(*) as online FROM cmi_users WHERE online = 1');
+      const [totalPlayers] = await pool.query('SELECT COUNT(*) as total FROM users');
+      const [onlinePlayers] = await pool.query(
+        'SELECT COUNT(*) as online FROM users WHERE LastLoginTime > LastLogoffTime'
+      );
+      const ago = daysAgoTimestamp(7);
       const [newPlayers] = await pool.query(
-        'SELECT COUNT(*) as new FROM cmi_users WHERE firstJoin >= DATE_SUB(NOW(), INTERVAL 7 DAY)'
+        `SELECT COUNT(*) as new FROM users WHERE LastLoginTime >= ${ago.sql}`,
+        ago.params
       );
 
       const stats = {
@@ -125,7 +125,7 @@ class PlayerService {
         newThisWeek: newPlayers[0].new
       };
 
-      cache.set(cacheKey, stats, 60); // 缓存60秒
+      cache.set(cacheKey, stats, 60);
       return stats;
     } catch (error) {
       throw new Error(`获取玩家统计失败: ${error.message}`);
@@ -140,15 +140,59 @@ class PlayerService {
 
     try {
       const [rows] = await pool.query(
-        'SELECT userName, playTime, lastOnline FROM cmi_users ORDER BY playTime DESC LIMIT ?',
+        'SELECT player_uuid, username, TotalPlayTime, LastLoginTime, LastLogoffTime FROM users ORDER BY TotalPlayTime DESC LIMIT ?',
         [limit]
       );
 
-      cache.set(cacheKey, rows, 300); // 缓存5分钟
-      return rows;
+      const result = rows.map(r => ({
+        UUID: r.player_uuid,
+        userName: r.username,
+        playTime: r.TotalPlayTime,
+        lastOnline: r.LastLogoffTime,
+        online: (r.LastLoginTime || 0) > (r.LastLogoffTime || 0)
+      }));
+
+      cache.set(cacheKey, result, 300);
+      return result;
     } catch (error) {
       throw new Error(`获取游戏时长排行失败: ${error.message}`);
     }
+  }
+
+  /**
+   * 标准化玩家数据（CMI 字段 -> 程序通用格式）
+   */
+  _normalizePlayer(row, detail = false) {
+    const player = {
+      UUID: row.player_uuid,
+      userName: row.username,
+      nickname: row.nickname,
+      displayName: row.DisplayName,
+      lastOnline: row.LastLogoffTime || row.LastLoginTime,
+      lastLogin: row.LastLoginTime,
+      playTime: row.TotalPlayTime,
+      online: (row.LastLoginTime || 0) > (row.LastLogoffTime || 0),
+      rank: row.Rank,
+      balance: row.Balance
+    };
+
+    if (detail) {
+      const ipInfo = parseIps(row.Ips);
+      player.ip = ipInfo.latest;
+      player.ipHistory = ipInfo.all;
+      player.homes = parseHomes(row.Homes);
+      player.notes = row.Notes;
+      player.BannedUntil = row.BannedUntil;
+      player.BannedAt = row.BannedAt;
+      player.BannedBy = row.BannedBy;
+      player.BanReason = row.BanReason;
+      player.Muted = row.Muted;
+      player.Jail = row.Jail;
+      player.JailedUntil = row.JailedUntil;
+      player.JailReason = row.JailReason;
+    }
+
+    return player;
   }
 }
 
