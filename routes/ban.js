@@ -19,14 +19,19 @@ router.get('/', validationRules.pagination, handleValidationErrors, async (req, 
       bans: bansResult.bans,
       pagination: bansResult.pagination,
       stats,
-      keyword: ''
+      keyword: '',
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '封禁记录' }
+      ]
     });
   } catch (error) {
     console.error('获取封禁列表失败:', error);
     res.render('error', {
       title: '错误',
       message: '获取封禁列表失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [{ label: '首页', url: '/' }, { label: '错误' }]
     });
   }
 });
@@ -43,14 +48,20 @@ router.get('/mutes', validationRules.pagination, handleValidationErrors, async (
       title: '禁言记录',
       mutes: result.mutes,
       pagination: result.pagination,
-      keyword: ''
+      keyword: '',
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '封禁记录', url: '/bans' },
+        { label: '禁言记录' }
+      ]
     });
   } catch (error) {
     console.error('获取禁言列表失败:', error);
     res.render('error', {
       title: '错误',
       message: '获取禁言列表失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [{ label: '首页', url: '/' }, { label: '错误' }]
     });
   }
 });
@@ -66,14 +77,20 @@ router.get('/search', validationRules.searchPlayer, handleValidationErrors, asyn
       bans,
       pagination: null,
       stats: null,
-      keyword
+      keyword,
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '封禁记录', url: '/bans' },
+        { label: `搜索: ${keyword}` }
+      ]
     });
   } catch (error) {
     console.error('搜索封禁记录失败:', error);
     res.render('error', {
       title: '错误',
       message: '搜索封禁记录失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [{ label: '首页', url: '/' }, { label: '错误' }]
     });
   }
 });

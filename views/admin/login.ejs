@@ -2,15 +2,15 @@
 
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-gray-100">
       管理员登录
     </h2>
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-    <div class="bg-white shadow rounded-lg p-6">
+    <div class="mc-card bg-white dark:bg-gray-800 shadow rounded-lg p-6">
       <% if (error) { %>
-        <div class="rounded-md bg-red-50 p-4 mb-6">
+        <div class="rounded-md bg-red-50 dark:bg-red-900/20 p-4 mb-6">
           <div class="flex">
             <div class="flex-shrink-0">
               <svg class="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -18,7 +18,7 @@
               </svg>
             </div>
             <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800"><%= error %></h3>
+              <h3 class="text-sm font-medium text-red-800 dark:text-red-200"><%= error %></h3>
             </div>
           </div>
         </div>
@@ -26,16 +26,16 @@
 
       <form class="space-y-6" action="/admin/login" method="POST">
         <div>
-          <label for="username" class="block text-sm font-medium leading-6 text-gray-900">用户名</label>
+          <label for="username" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">用户名</label>
           <div class="mt-2">
-            <input id="username" name="username" type="text" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-minecraft-grass sm:text-sm sm:leading-6 px-3">
+            <input id="username" name="username" type="text" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-gray-100 dark:bg-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-minecraft-grass sm:text-sm sm:leading-6 px-3">
           </div>
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium leading-6 text-gray-900">密码</label>
+          <label for="password" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">密码</label>
           <div class="mt-2">
-            <input id="password" name="password" type="password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-minecraft-grass sm:text-sm sm:leading-6 px-3">
+            <input id="password" name="password" type="password" required class="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-gray-100 dark:bg-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-600 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-minecraft-grass sm:text-sm sm:leading-6 px-3">
           </div>
         </div>
 

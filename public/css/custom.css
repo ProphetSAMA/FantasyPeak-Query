@@ -1,0 +1,435 @@
+/* ============================================
+   Minecraft Query - Custom Styles
+   ============================================ */
+
+/* Minecraft Theme Colors */
+:root {
+  --mc-grass: #5D8C3E;
+  --mc-dirt: #8B6B3D;
+  --mc-stone: #7F7F7F;
+  --mc-diamond: #4AEDD9;
+  --mc-gold: #FCDB05;
+  --mc-redstone: #FF0000;
+  --mc-emerald: #17DD62;
+  --mc-creeper: #0DA70B;
+  --mc-obsidian: #1B1035;
+  --mc-bedrock: #333333;
+  --mc-wood: #9C6B30;
+  --mc-iron: #D8D8D8;
+  --mc-ender: #1B1035;
+}
+
+/* Dark Mode Variables */
+.dark {
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --bg-card: #1e2a4a;
+  --text-primary: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --border-color: #2a3a5a;
+}
+
+/* ============================================
+   Minecraft-Style Background
+   ============================================ */
+
+body {
+  background-color: #f3f4f6;
+  min-height: 100vh;
+}
+
+.dark body {
+  background-color: #0f0f1a;
+}
+
+/* Subtle dirt texture overlay */
+.minecraft-bg {
+  position: relative;
+}
+
+.minecraft-bg::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 16px,
+      rgba(139, 107, 61, 0.03) 16px,
+      rgba(139, 107, 61, 0.03) 17px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 16px,
+      rgba(139, 107, 61, 0.03) 16px,
+      rgba(139, 107, 61, 0.03) 17px
+    );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   Card Styles
+   ============================================ */
+
+.mc-card {
+  position: relative;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.mc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark .mc-card {
+  background-color: #1e2a4a;
+  border-color: #2a3a5a;
+}
+
+.dark .mc-card:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Pixel Art Border Effect */
+.mc-pixel-border {
+  box-shadow:
+    inset -4px -4px 0px 0px rgba(0, 0, 0, 0.1),
+    inset 4px 4px 0px 0px rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================
+   Navigation Styles
+   ============================================ */
+
+.mc-nav {
+  background: linear-gradient(180deg, var(--mc-grass) 0%, #4a7a2e 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.mc-nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mc-dirt),
+    var(--mc-dirt) 16px,
+    #6b5330 16px,
+    #6b5330 32px
+  );
+}
+
+/* Nav Link Hover Effect */
+.mc-nav-link {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.mc-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 3px;
+  background-color: var(--mc-diamond);
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.mc-nav-link:hover::after,
+.mc-nav-link.active::after {
+  width: 80%;
+}
+
+/* ============================================
+   Scrollbar Styles
+   ============================================ */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--mc-stone);
+  border-radius: 6px;
+  border: 3px solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mc-dirt);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1a1a2e;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4a4a6a;
+  border-color: #1a1a2e;
+}
+
+/* ============================================
+   Tooltip Styles
+   ============================================ */
+
+.mc-tooltip {
+  position: relative;
+}
+
+.mc-tooltip::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background-color: #333;
+  color: white;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1000;
+}
+
+.mc-tooltip:hover::before {
+  opacity: 1;
+  visibility: visible;
+  bottom: calc(100% + 5px);
+}
+
+/* ============================================
+   Button Styles
+   ============================================ */
+
+.mc-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.mc-btn::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease;
+}
+
+.mc-btn:active::after {
+  width: 200%;
+  height: 200%;
+}
+
+/* ============================================
+   Table Styles
+   ============================================ */
+
+.mc-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.mc-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.dark .mc-table th {
+  background-color: #2a3a5a;
+}
+
+.mc-table tr {
+  transition: background-color 0.2s ease;
+}
+
+.mc-table tr:hover {
+  background-color: rgba(93, 140, 62, 0.05);
+}
+
+.dark .mc-table tr:hover {
+  background-color: rgba(74, 237, 217, 0.05);
+}
+
+/* ============================================
+   Loading Skeleton
+   ============================================ */
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.dark .skeleton {
+  background: linear-gradient(90deg, #2a3a5a 25%, #1e2a4a 50%, #2a3a5a 75%);
+  background-size: 200% 100%;
+}
+
+/* ============================================
+   Toast Styles
+   ============================================ */
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast {
+  min-width: 300px;
+  max-width: 400px;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.toast-success {
+  background-color: #d4edda;
+  border-left: 4px solid var(--mc-emerald);
+  color: #155724;
+}
+
+.toast-error {
+  background-color: #f8d7da;
+  border-left: 4px solid var(--mc-redstone);
+  color: #721c24;
+}
+
+.toast-warning {
+  background-color: #fff3cd;
+  border-left: 4px solid var(--mc-gold);
+  color: #856404;
+}
+
+.toast-info {
+  background-color: #d1ecf1;
+  border-left: 4px solid var(--mc-diamond);
+  color: #0c5460;
+}
+
+/* ============================================
+   Back to Top Button
+   ============================================ */
+
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--mc-grass), var(--mc-dirt));
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(93, 140, 62, 0.4);
+  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  z-index: 100;
+}
+
+.back-to-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.back-to-top:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(93, 140, 62, 0.6);
+}
+
+/* ============================================
+   Progress Bar
+   ============================================ */
+
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--mc-diamond), var(--mc-emerald));
+  z-index: 9999;
+  transition: width 0.3s ease;
+}
+
+/* ============================================
+   Responsive Utilities
+   ============================================ */
+
+@media (max-width: 768px) {
+  .mc-card:hover {
+    transform: none;
+  }
+
+  .toast-container {
+    left: 20px;
+    right: 20px;
+  }
+
+  .toast {
+    min-width: auto;
+    max-width: none;
+  }
+}
+
+/* ============================================
+   Print Styles
+   ============================================ */
+
+@media print {
+  .mc-nav,
+  .back-to-top,
+  .toast-container,
+  .progress-bar {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+}

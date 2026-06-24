@@ -106,6 +106,31 @@ class ServerService {
       throw new Error(`获取活跃度统计失败: ${error.message}`);
     }
   }
+
+  // 获取新玩家注册统计（按天）
+  async getNewPlayersStats(days = 30) {
+    const cacheKey = `new_players_stats_${days}`;
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
+
+    try {
+      const [rows] = await pool.query(
+        `SELECT
+          DATE(FROM_UNIXTIME(firstJoin / 1000)) as date,
+          COUNT(*) as count
+        FROM cmi_users
+        WHERE firstJoin >= UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL ? DAY)) * 1000
+        GROUP BY DATE(FROM_UNIXTIME(firstJoin / 1000))
+        ORDER BY date ASC`,
+        [days]
+      );
+
+      cache.set(cacheKey, rows, 300); // 缓存5分钟
+      return rows;
+    } catch (error) {
+      throw new Error(`获取新玩家统计失败: ${error.message}`);
+    }
+  }
 }
 
 module.exports = new ServerService();

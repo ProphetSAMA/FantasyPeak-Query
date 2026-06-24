@@ -2,8 +2,8 @@
 
 <div class="space-y-6">
   <!-- 页面标题 -->
-  <div class="border-b border-gray-200 pb-5">
-    <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900">
+  <div class="border-b border-gray-200 dark:border-gray-700 pb-5">
+    <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-gray-100">
       管理后台
     </h1>
   </div>
@@ -11,11 +11,11 @@
   <!-- 统计卡片 -->
   <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
     <!-- 总玩家数 -->
-    <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="mc-card overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow animate-on-load animate-fadeInUp">
       <div class="p-5">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-grass">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-minecraft-grass to-green-600">
               <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
@@ -23,8 +23,8 @@
           </div>
           <div class="ml-5 w-0 flex-1">
             <dl>
-              <dt class="truncate text-sm font-medium text-gray-500">总玩家数</dt>
-              <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= playerStats.total %></dd>
+              <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">总玩家数</dt>
+              <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-gray-100"><%= playerStats.total %></dd>
             </dl>
           </div>
         </div>
@@ -32,11 +32,11 @@
     </div>
 
     <!-- 在线玩家 -->
-    <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="mc-card overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow animate-on-load animate-fadeInUp delay-100">
       <div class="p-5">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-emerald">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-minecraft-emerald to-green-500">
               <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z" />
               </svg>
@@ -44,8 +44,8 @@
           </div>
           <div class="ml-5 w-0 flex-1">
             <dl>
-              <dt class="truncate text-sm font-medium text-gray-500">在线玩家</dt>
-              <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= playerStats.online %></dd>
+              <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">在线玩家</dt>
+              <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-gray-100"><%= playerStats.online %></dd>
             </dl>
           </div>
         </div>
@@ -53,11 +53,11 @@
     </div>
 
     <!-- 活跃封禁 -->
-    <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="mc-card overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow animate-on-load animate-fadeInUp delay-200">
       <div class="p-5">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-redstone">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-minecraft-redstone to-red-600">
               <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
               </svg>
@@ -65,8 +65,8 @@
           </div>
           <div class="ml-5 w-0 flex-1">
             <dl>
-              <dt class="truncate text-sm font-medium text-gray-500">活跃封禁</dt>
-              <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= banStats.activeBans %></dd>
+              <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">活跃封禁</dt>
+              <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-gray-100"><%= banStats.activeBans %></dd>
             </dl>
           </div>
         </div>
@@ -74,11 +74,11 @@
     </div>
 
     <!-- 活跃禁言 -->
-    <div class="overflow-hidden rounded-lg bg-white shadow">
+    <div class="mc-card overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow animate-on-load animate-fadeInUp delay-300">
       <div class="p-5">
         <div class="flex items-center">
           <div class="flex-shrink-0">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-gold">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-minecraft-gold to-yellow-500">
               <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
@@ -87,8 +87,8 @@
           </div>
           <div class="ml-5 w-0 flex-1">
             <dl>
-              <dt class="truncate text-sm font-medium text-gray-500">活跃禁言</dt>
-              <dd class="mt-1 text-3xl font-semibold text-gray-900"><%= banStats.activeMutes %></dd>
+              <dt class="truncate text-sm font-medium text-gray-500 dark:text-gray-400">活跃禁言</dt>
+              <dd class="mt-1 text-3xl font-semibold text-gray-900 dark:text-gray-100"><%= banStats.activeMutes %></dd>
             </dl>
           </div>
         </div>
@@ -99,59 +99,59 @@
   <!-- 快速操作 -->
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
     <!-- 管理链接 -->
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-      <div class="px-6 py-5 border-b border-gray-200">
-        <h3 class="text-lg font-medium text-gray-900">快速操作</h3>
+    <div class="mc-card bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">快速操作</h3>
       </div>
       <div class="px-6 py-4">
         <div class="grid grid-cols-2 gap-4">
-          <a href="/admin/players" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-minecraft-grass hover:bg-gray-50 transition-colors">
-            <svg class="h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a href="/admin/players" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 p-6 hover:border-minecraft-grass hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <svg class="h-8 w-8 text-gray-400 dark:text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
-            <span class="text-sm font-medium text-gray-900">玩家管理</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">玩家管理</span>
           </a>
-          <a href="/admin/bans" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-minecraft-redstone hover:bg-gray-50 transition-colors">
-            <svg class="h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a href="/admin/bans" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 p-6 hover:border-minecraft-redstone hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <svg class="h-8 w-8 text-gray-400 dark:text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
             </svg>
-            <span class="text-sm font-medium text-gray-900">封禁管理</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">封禁管理</span>
           </a>
-          <a href="/bans/mutes" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-minecraft-gold hover:bg-gray-50 transition-colors">
-            <svg class="h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <a href="/bans/mutes" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 p-6 hover:border-minecraft-gold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <svg class="h-8 w-8 text-gray-400 dark:text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
             </svg>
-            <span class="text-sm font-medium text-gray-900">禁言管理</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">禁言管理</span>
           </a>
-          <button onclick="clearCache()" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 hover:border-minecraft-diamond hover:bg-gray-50 transition-colors">
-            <svg class="h-8 w-8 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <button onclick="clearCache()" class="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 p-6 hover:border-minecraft-diamond hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            <svg class="h-8 w-8 text-gray-400 dark:text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            <span class="text-sm font-medium text-gray-900">清除缓存</span>
+            <span class="text-sm font-medium text-gray-900 dark:text-gray-100">清除缓存</span>
           </button>
         </div>
       </div>
     </div>
 
     <!-- 缓存统计 -->
-    <div class="bg-white shadow rounded-lg overflow-hidden">
-      <div class="px-6 py-5 border-b border-gray-200">
-        <h3 class="text-lg font-medium text-gray-900">缓存统计</h3>
+    <div class="mc-card bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">缓存统计</h3>
       </div>
       <div class="px-6 py-4">
         <dl class="space-y-4">
           <div class="flex items-center justify-between">
-            <dt class="text-sm font-medium text-gray-500">命中次数</dt>
-            <dd class="text-sm text-gray-900"><%= cacheStats.hits %></dd>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">命中次数</dt>
+            <dd class="text-sm text-gray-900 dark:text-gray-100"><%= cacheStats.hits %></dd>
           </div>
           <div class="flex items-center justify-between">
-            <dt class="text-sm font-medium text-gray-500">未命中次数</dt>
-            <dd class="text-sm text-gray-900"><%= cacheStats.misses %></dd>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">未命中次数</dt>
+            <dd class="text-sm text-gray-900 dark:text-gray-100"><%= cacheStats.misses %></dd>
           </div>
           <div class="flex items-center justify-between">
-            <dt class="text-sm font-medium text-gray-500">命中率</dt>
-            <dd class="text-sm text-gray-900">
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">命中率</dt>
+            <dd class="text-sm text-gray-900 dark:text-gray-100">
               <% if (cacheStats.hits + cacheStats.misses > 0) { %>
                 <%= ((cacheStats.hits / (cacheStats.hits + cacheStats.misses)) * 100).toFixed(2) %>%
               <% } else { %>
@@ -160,12 +160,12 @@
             </dd>
           </div>
           <div class="flex items-center justify-between">
-            <dt class="text-sm font-medium text-gray-500">缓存键数</dt>
-            <dd class="text-sm text-gray-900"><%= cacheStats.keys %></dd>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">缓存键数</dt>
+            <dd class="text-sm text-gray-900 dark:text-gray-100"><%= cacheStats.keys %></dd>
           </div>
           <div class="flex items-center justify-between">
-            <dt class="text-sm font-medium text-gray-500">内存使用</dt>
-            <dd class="text-sm text-gray-900"><%= (cacheStats.vsize / 1024 / 1024).toFixed(2) %> MB</dd>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">内存使用</dt>
+            <dd class="text-sm text-gray-900 dark:text-gray-100"><%= (cacheStats.vsize / 1024 / 1024).toFixed(2) %> MB</dd>
           </div>
         </dl>
       </div>
@@ -185,14 +185,14 @@ function clearCache() {
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        alert('缓存已清除');
-        location.reload();
+        showToast('缓存已清除', 'success');
+        setTimeout(() => location.reload(), 1000);
       } else {
-        alert('清除缓存失败: ' + data.message);
+        showToast('清除缓存失败: ' + data.message, 'error');
       }
     })
     .catch(error => {
-      alert('清除缓存失败: ' + error.message);
+      showToast('清除缓存失败: ' + error.message, 'error');
     });
   }
 }

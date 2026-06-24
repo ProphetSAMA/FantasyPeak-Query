@@ -1,0 +1,266 @@
+<%- include('partials/header') %>
+
+<div class="space-y-6">
+  <!-- 页面标题 -->
+  <div class="border-b border-gray-200 dark:border-gray-700 pb-5">
+    <h1 class="text-3xl font-bold leading-tight tracking-tight text-gray-900 dark:text-gray-100">
+      <svg class="inline-block mr-3 h-8 w-8 text-minecraft-emerald" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+      <%= title %>
+    </h1>
+    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+      服务器最近 30 天的活跃度统计
+    </p>
+  </div>
+
+  <!-- 图表区域 -->
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <!-- 每日活跃玩家 -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+          <svg class="inline-block mr-2 h-5 w-5 text-minecraft-diamond" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+          </svg>
+          每日活跃玩家
+        </h3>
+      </div>
+      <div class="p-6">
+        <canvas id="activityChart" height="300"></canvas>
+      </div>
+    </div>
+
+    <!-- 新注册玩家 -->
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg overflow-hidden">
+      <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+          <svg class="inline-block mr-2 h-5 w-5 text-minecraft-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+          </svg>
+          新注册玩家
+        </h3>
+      </div>
+      <div class="p-6">
+        <canvas id="newPlayersChart" height="300"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- 统计卡片 -->
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-5">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-grass">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+        </div>
+        <div class="ml-5">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">30天平均活跃</p>
+          <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100" id="avg-activity">-</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-5">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-diamond">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+          </div>
+        </div>
+        <div class="ml-5">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">峰值活跃</p>
+          <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100" id="peak-activity">-</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-5">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <div class="flex h-12 w-12 items-center justify-center rounded-full bg-minecraft-gold">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+            </svg>
+          </div>
+        </div>
+        <div class="ml-5">
+          <p class="text-sm font-medium text-gray-500 dark:text-gray-400">30天新玩家</p>
+          <p class="text-2xl font-semibold text-gray-900 dark:text-gray-100" id="total-new-players">-</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Chart.js configuration
+  const isDark = document.documentElement.classList.contains('dark');
+  const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+  const textColor = isDark ? '#e0e0e0' : '#666666';
+
+  // Activity Chart
+  const activityData = <%- activityData %>;
+  const activityCtx = document.getElementById('activityChart').getContext('2d');
+
+  new Chart(activityCtx, {
+    type: 'line',
+    data: {
+      labels: activityData.map(d => {
+        const date = new Date(d.date);
+        return `${date.getMonth() + 1}/${date.getDate()}`;
+      }),
+      datasets: [{
+        label: '活跃玩家',
+        data: activityData.map(d => d.count),
+        borderColor: '#4AEDD9',
+        backgroundColor: 'rgba(74, 237, 217, 0.1)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#4AEDD9',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: isDark ? '#1e2a4a' : '#fff',
+          titleColor: isDark ? '#e0e0e0' : '#333',
+          bodyColor: isDark ? '#e0e0e0' : '#666',
+          borderColor: isDark ? '#2a3a5a' : '#ddd',
+          borderWidth: 1,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              return `活跃玩家: ${context.parsed.y}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            color: gridColor
+          },
+          ticks: {
+            color: textColor,
+            maxRotation: 45,
+            maxTicksLimit: 10
+          }
+        },
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: gridColor
+          },
+          ticks: {
+            color: textColor,
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+
+  // New Players Chart
+  const newPlayersData = <%- newPlayersData %>;
+  const newPlayersCtx = document.getElementById('newPlayersChart').getContext('2d');
+
+  new Chart(newPlayersCtx, {
+    type: 'bar',
+    data: {
+      labels: newPlayersData.map(d => {
+        const date = new Date(d.date);
+        return `${date.getMonth() + 1}/${date.getDate()}`;
+      }),
+      datasets: [{
+        label: '新玩家',
+        data: newPlayersData.map(d => d.count),
+        backgroundColor: 'rgba(252, 219, 5, 0.6)',
+        borderColor: '#FCDB05',
+        borderWidth: 1,
+        borderRadius: 4,
+        hoverBackgroundColor: 'rgba(252, 219, 5, 0.8)'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: isDark ? '#1e2a4a' : '#fff',
+          titleColor: isDark ? '#e0e0e0' : '#333',
+          bodyColor: isDark ? '#e0e0e0' : '#666',
+          borderColor: isDark ? '#2a3a5a' : '#ddd',
+          borderWidth: 1,
+          padding: 12,
+          displayColors: false,
+          callbacks: {
+            label: function(context) {
+              return `新玩家: ${context.parsed.y}`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            display: false
+          },
+          ticks: {
+            color: textColor,
+            maxRotation: 45,
+            maxTicksLimit: 10
+          }
+        },
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: gridColor
+          },
+          ticks: {
+            color: textColor,
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+
+  // Calculate statistics
+  if (activityData.length > 0) {
+    const avgActivity = Math.round(activityData.reduce((sum, d) => sum + d.count, 0) / activityData.length);
+    const peakActivity = Math.max(...activityData.map(d => d.count));
+
+    document.getElementById('avg-activity').textContent = avgActivity;
+    document.getElementById('peak-activity').textContent = peakActivity;
+  }
+
+  if (newPlayersData.length > 0) {
+    const totalNewPlayers = newPlayersData.reduce((sum, d) => sum + d.count, 0);
+    document.getElementById('total-new-players').textContent = totalNewPlayers;
+  }
+});
+</script>
+
+<%- include('partials/footer') %>

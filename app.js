@@ -77,10 +77,38 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// 全局变量
+// 全局变量和辅助函数
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   res.locals.currentPath = req.path;
+
+  // 格式化游戏时长
+  res.locals.formatPlaytime = function(ms) {
+    if (!ms || ms <= 0) return '未知';
+    const hours = Math.floor(ms / 3600000);
+    const minutes = Math.floor((ms % 3600000) / 60000);
+    if (hours > 0) {
+      return `${hours} 小时 ${minutes} 分钟`;
+    }
+    return `${minutes} 分钟`;
+  };
+
+  // 格式化日期
+  res.locals.formatDate = function(timestamp) {
+    if (!timestamp) return '未知';
+    return new Date(timestamp).toLocaleString('zh-CN');
+  };
+
+  // 获取头像URL
+  res.locals.getAvatarUrl = function(uuid, size = 40) {
+    return `https://mc-heads.net/avatar/${uuid}/${size}`;
+  };
+
+  // 获取身体头像URL
+  res.locals.getBodyUrl = function(uuid, size = 128) {
+    return `https://mc-heads.net/body/${uuid}/${size}`;
+  };
+
   next();
 });
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="h-full bg-gray-100">
+<html lang="zh-CN" class="h-full bg-gray-100 dark:bg-gray-900">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -18,7 +19,11 @@
               gold: '#FCDB05',
               redstone: '#FF0000',
               emerald: '#17DD62',
-              creeper: '#0DA70B'
+              creeper: '#0DA70B',
+              obsidian: '#1B1035',
+              bedrock: '#333333',
+              wood: '#9C6B30',
+              iron: '#D8D8D8'
             }
           }
         }
@@ -28,6 +33,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/css/custom.css">
+  <link rel="stylesheet" href="/css/animations.css">
   <style>
     .font-minecraft {
       font-family: 'Press Start 2P', cursive;
@@ -35,9 +43,12 @@
   </style>
 </head>
 <body class="h-full">
-  <div class="min-h-full">
+  <!-- Progress Bar -->
+  <div id="progress-bar" class="progress-bar"></div>
+
+  <div class="min-h-full minecraft-bg">
     <!-- 导航栏 -->
-    <nav class="bg-minecraft-grass shadow-lg">
+    <nav class="mc-nav shadow-lg">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center">
@@ -48,17 +59,26 @@
             </div>
             <div class="hidden md:block">
               <div class="ml-10 flex items-baseline space-x-4">
-                <a href="/" class="<%= currentPath === '/' ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                <a href="/" class="mc-nav-link <%= currentPath === '/' ? 'active bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
                   首页
                 </a>
-                <a href="/player" class="<%= currentPath.startsWith('/player') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                <a href="/player" class="mc-nav-link <%= currentPath.startsWith('/player') ? 'active bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
                   玩家列表
                 </a>
-                <a href="/bans" class="<%= currentPath.startsWith('/bans') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                <a href="/bans" class="mc-nav-link <%= currentPath.startsWith('/bans') ? 'active bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
                   封禁记录
                 </a>
+                <a href="/warps" class="mc-nav-link <%= currentPath === '/warps' ? 'active bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  传送点
+                </a>
+                <a href="/playtime" class="mc-nav-link <%= currentPath === '/playtime' ? 'active bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  游戏时长
+                </a>
+                <a href="/activity" class="mc-nav-link <%= currentPath === '/activity' ? 'active bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  活跃统计
+                </a>
                 <% if (user) { %>
-                  <a href="/admin" class="<%= currentPath.startsWith('/admin') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
+                  <a href="/admin" class="mc-nav-link <%= currentPath.startsWith('/admin') ? 'active bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> rounded-md px-3 py-2 text-sm font-medium transition-colors">
                     管理后台
                   </a>
                 <% } %>
@@ -78,6 +98,12 @@
                   </button>
                 </div>
               </form>
+              <!-- Dark Mode Toggle -->
+              <button id="dark-mode-toggle" onclick="toggleDarkMode()" class="text-white hover:bg-minecraft-dirt rounded-md p-2 transition-colors mr-2" title="切换深色模式">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              </button>
               <% if (user) { %>
                 <a href="/admin/logout" class="text-white hover:bg-red-600 rounded-md px-3 py-2 text-sm font-medium transition-colors">
                   登出
@@ -113,6 +139,15 @@
           <a href="/bans" class="<%= currentPath.startsWith('/bans') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
             封禁记录
           </a>
+          <a href="/warps" class="<%= currentPath === '/warps' ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
+            传送点
+          </a>
+          <a href="/playtime" class="<%= currentPath === '/playtime' ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
+            游戏时长
+          </a>
+          <a href="/activity" class="<%= currentPath === '/activity' ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
+            活跃统计
+          </a>
           <% if (user) { %>
             <a href="/admin" class="<%= currentPath.startsWith('/admin') ? 'bg-minecraft-dirt text-white' : 'text-white hover:bg-minecraft-dirt' %> block rounded-md px-3 py-2 text-base font-medium">
               管理后台
@@ -132,8 +167,42 @@
             <input type="text" name="keyword" placeholder="搜索玩家..." class="w-full rounded-lg bg-white/20 px-4 py-2 text-white placeholder-white/70 focus:bg-white focus:text-gray-900 focus:placeholder-gray-500 transition-all outline-none">
           </form>
         </div>
+        <!-- 移动端深色模式切换 -->
+        <div class="border-t border-minecraft-dirt px-4 pb-3 pt-2">
+          <button onclick="toggleDarkMode()" class="w-full text-left text-white hover:bg-minecraft-dirt rounded-md px-3 py-2 text-base font-medium">
+            🌙 切换深色模式
+          </button>
+        </div>
       </div>
     </nav>
+
+    <!-- 面包屑导航 -->
+    <% if (typeof breadcrumbs !== 'undefined' && breadcrumbs && breadcrumbs.length > 0) { %>
+      <div class="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
+          <nav class="flex" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2">
+              <% breadcrumbs.forEach(function(crumb, index) { %>
+                <li class="flex items-center">
+                  <% if (index > 0) { %>
+                    <svg class="h-4 w-4 text-gray-400 mx-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  <% } %>
+                  <% if (crumb.url) { %>
+                    <a href="<%= crumb.url %>" class="text-sm text-gray-500 dark:text-gray-400 hover:text-minecraft-grass dark:hover:text-minecraft-diamond transition-colors">
+                      <%= crumb.label %>
+                    </a>
+                  <% } else { %>
+                    <span class="text-sm text-gray-900 dark:text-gray-100 font-medium"><%= crumb.label %></span>
+                  <% } %>
+                </li>
+              <% }); %>
+            </ol>
+          </nav>
+        </div>
+      </div>
+    <% } %>
 
     <!-- 主要内容 -->
     <main>

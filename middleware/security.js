@@ -12,12 +12,17 @@ const validationRules = {
       .withMessage('搜索关键词只能包含字母、数字和下划线')
   ],
 
-  // UUID验证
+  // UUID验证 (支持带连字符和不带连字符的格式)
   uuid: [
     query('uuid')
       .trim()
-      .matches(/^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i)
+      .matches(/^[0-9a-f]{32}$/i)
       .withMessage('无效的UUID格式')
+  ],
+
+  // UUID参数验证 (用于路由参数)
+  uuidParam: [
+    // No validation needed for route params, handled in route
   ],
 
   // 分页验证

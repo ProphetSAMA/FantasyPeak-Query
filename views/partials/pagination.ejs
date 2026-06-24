@@ -1,0 +1,113 @@
+<%#
+  Pagination Partial Component
+
+  Usage: <%- include('partials/pagination', { pagination: pagination, keyword: keyword, baseUrl: '/player' }) %>
+
+  Parameters:
+  - pagination: { page, limit, total, pages }
+  - keyword: search keyword (optional)
+  - baseUrl: base URL for pagination links (optional, defaults to current path)
+%>
+
+<% if (pagination && pagination.pages > 1) { %>
+  <% const base = typeof baseUrl !== 'undefined' ? baseUrl : ''; %>
+  <% const kw = typeof keyword !== 'undefined' && keyword ? keyword : ''; %>
+
+  <div class="bg-white dark:bg-gray-800 px-4 py-3 flex items-center justify-between border-t border-gray-200 dark:border-gray-700 sm:px-6">
+    <!-- Mobile pagination -->
+    <div class="flex-1 flex justify-between sm:hidden">
+      <% if (pagination.page > 1) { %>
+        <a href="<%= base %>?page=<%= pagination.page - 1 %><%= kw ? '&keyword=' + kw : '' %>"
+           class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+          上一页
+        </a>
+      <% } %>
+      <% if (pagination.page < pagination.pages) { %>
+        <a href="<%= base %>?page=<%= pagination.page + 1 %><%= kw ? '&keyword=' + kw : '' %>"
+           class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+          下一页
+        </a>
+      <% } %>
+    </div>
+
+    <!-- Desktop pagination -->
+    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+      <div>
+        <p class="text-sm text-gray-700 dark:text-gray-300">
+          显示第 <span class="font-medium"><%= (pagination.page - 1) * pagination.limit + 1 %></span>
+          到 <span class="font-medium"><%= Math.min(pagination.page * pagination.limit, pagination.total) %></span>
+          条，共 <span class="font-medium"><%= pagination.total %></span> 条
+        </p>
+      </div>
+      <div>
+        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+          <!-- Previous button -->
+          <% if (pagination.page > 1) { %>
+            <a href="<%= base %>?page=<%= pagination.page - 1 %><%= kw ? '&keyword=' + kw : '' %>"
+               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+              <span class="sr-only">上一页</span>
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+            </a>
+          <% } %>
+
+          <!-- Page numbers -->
+          <%
+            let startPage = Math.max(1, pagination.page - 2);
+            let endPage = Math.min(pagination.pages, pagination.page + 2);
+
+            // Always show first page
+            if (startPage > 1) { %>
+              <a href="<%= base %>?page=1<%= kw ? '&keyword=' + kw : '' %>"
+                 class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                1
+              </a>
+              <% if (startPage > 2) { %>
+                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300">
+                  ...
+                </span>
+              <% } %>
+          <% } %>
+
+          <% for (let i = startPage; i <= endPage; i++) { %>
+            <% if (i === pagination.page) { %>
+              <span class="relative inline-flex items-center px-4 py-2 border border-minecraft-grass bg-minecraft-grass text-sm font-medium text-white">
+                <%= i %>
+              </span>
+            <% } else { %>
+              <a href="<%= base %>?page=<%= i %><%= kw ? '&keyword=' + kw : '' %>"
+                 class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+                <%= i %>
+              </a>
+            <% } %>
+          <% } %>
+
+          <!-- Always show last page -->
+          <% if (endPage < pagination.pages) { %>
+            <% if (endPage < pagination.pages - 1) { %>
+              <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300">
+                ...
+              </span>
+            <% } %>
+            <a href="<%= base %>?page=<%= pagination.pages %><%= kw ? '&keyword=' + kw : '' %>"
+               class="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+              <%= pagination.pages %>
+            </a>
+          <% } %>
+
+          <!-- Next button -->
+          <% if (pagination.page < pagination.pages) { %>
+            <a href="<%= base %>?page=<%= pagination.page + 1 %><%= kw ? '&keyword=' + kw : '' %>"
+               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+              <span class="sr-only">下一页</span>
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          <% } %>
+        </nav>
+      </div>
+    </div>
+  </div>
+<% } %>

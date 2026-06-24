@@ -12,7 +12,14 @@ router.get('/login', (req, res) => {
   if (req.session.user) {
     return res.redirect('/admin');
   }
-  res.render('admin/login', { title: '管理员登录', error: null });
+  res.render('admin/login', {
+    title: '管理员登录',
+    error: null,
+    breadcrumbs: [
+      { label: '首页', url: '/' },
+      { label: '管理员登录' }
+    ]
+  });
 });
 
 // 登录处理
@@ -23,7 +30,11 @@ router.post('/login', validationRules.login, handleValidationErrors, (req, res) 
   if (!user) {
     return res.render('admin/login', {
       title: '管理员登录',
-      error: '用户名或密码错误'
+      error: '用户名或密码错误',
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '管理员登录' }
+      ]
     });
   }
 
@@ -52,14 +63,23 @@ router.get('/', requireAuth, async (req, res) => {
       playerStats,
       banStats,
       serverStats,
-      cacheStats
+      cacheStats,
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '管理后台' }
+      ]
     });
   } catch (error) {
     console.error('管理后台加载失败:', error);
     res.render('error', {
       title: '错误',
       message: '加载管理后台失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '管理后台', url: '/admin' },
+        { label: '错误' }
+      ]
     });
   }
 });
@@ -75,14 +95,24 @@ router.get('/players', requireAuth, validationRules.pagination, handleValidation
     res.render('admin/players', {
       title: '玩家管理',
       players: result.players,
-      pagination: result.pagination
+      pagination: result.pagination,
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '管理后台', url: '/admin' },
+        { label: '玩家管理' }
+      ]
     });
   } catch (error) {
     console.error('玩家管理页面加载失败:', error);
     res.render('error', {
       title: '错误',
       message: '加载玩家管理页面失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '管理后台', url: '/admin' },
+        { label: '错误' }
+      ]
     });
   }
 });
@@ -98,14 +128,24 @@ router.get('/bans', requireAuth, validationRules.pagination, handleValidationErr
     res.render('admin/bans', {
       title: '封禁管理',
       bans: result.bans,
-      pagination: result.pagination
+      pagination: result.pagination,
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '管理后台', url: '/admin' },
+        { label: '封禁管理' }
+      ]
     });
   } catch (error) {
     console.error('封禁管理页面加载失败:', error);
     res.render('error', {
       title: '错误',
       message: '加载封禁管理页面失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '管理后台', url: '/admin' },
+        { label: '错误' }
+      ]
     });
   }
 });

@@ -16,14 +16,19 @@ router.get('/', validationRules.pagination, handleValidationErrors, async (req, 
       title: '玩家列表',
       players: result.players,
       pagination: result.pagination,
-      keyword: ''
+      keyword: '',
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '玩家列表' }
+      ]
     });
   } catch (error) {
     console.error('获取玩家列表失败:', error);
     res.render('error', {
       title: '错误',
       message: '获取玩家列表失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [{ label: '首页', url: '/' }, { label: '错误' }]
     });
   }
 });
@@ -38,20 +43,26 @@ router.get('/search', validationRules.searchPlayer, handleValidationErrors, asyn
       title: `搜索结果: ${keyword}`,
       players,
       pagination: null,
-      keyword
+      keyword,
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '玩家列表', url: '/player' },
+        { label: `搜索: ${keyword}` }
+      ]
     });
   } catch (error) {
     console.error('搜索玩家失败:', error);
     res.render('error', {
       title: '错误',
       message: '搜索玩家失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [{ label: '首页', url: '/' }, { label: '错误' }]
     });
   }
 });
 
 // 玩家详情页
-router.get('/:uuid', validationRules.uuid, handleValidationErrors, async (req, res) => {
+router.get('/:uuid', async (req, res) => {
   try {
     const uuid = req.params.uuid;
     const [player, bans, mutes] = await Promise.all([
@@ -64,7 +75,8 @@ router.get('/:uuid', validationRules.uuid, handleValidationErrors, async (req, r
       return res.status(404).render('error', {
         title: '404 - 玩家未找到',
         message: '未找到该玩家',
-        error: {}
+        error: {},
+        breadcrumbs: [{ label: '首页', url: '/' }, { label: '玩家列表', url: '/player' }, { label: '未找到' }]
       });
     }
 
@@ -72,14 +84,20 @@ router.get('/:uuid', validationRules.uuid, handleValidationErrors, async (req, r
       title: player.userName,
       player,
       bans,
-      mutes
+      mutes,
+      breadcrumbs: [
+        { label: '首页', url: '/' },
+        { label: '玩家列表', url: '/player' },
+        { label: player.userName }
+      ]
     });
   } catch (error) {
     console.error('获取玩家详情失败:', error);
     res.render('error', {
       title: '错误',
       message: '获取玩家详情失败',
-      error: process.env.NODE_ENV === 'development' ? error : {}
+      error: process.env.NODE_ENV === 'development' ? error : {},
+      breadcrumbs: [{ label: '首页', url: '/' }, { label: '错误' }]
     });
   }
 });
