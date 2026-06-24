@@ -1,6 +1,6 @@
 {
   "name": "minecraft-cmi-query",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "description": "Minecraft CMI 数据查询系统",
   "main": "app.js",
   "scripts": {
@@ -29,7 +29,6 @@
     "helmet": "^7.0.0",
     "morgan": "^1.10.0",
     "mysql2": "^3.6.0",
-    "sql.js": "^1.14.1",
     "node-cache": "^5.1.2",
     "sql.js": "^1.14.1"
   },
