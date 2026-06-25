@@ -99,14 +99,28 @@ app.use((req, res, next) => {
     return new Date(timestamp).toLocaleString('zh-CN');
   };
 
-  // 获取头像URL
-  res.locals.getAvatarUrl = function(uuid, size = 40) {
+  // 获取头像URL（uuid: 玩家UUID, size: 尺寸, userName: 玩家名，BlessingSkin 需要）
+  res.locals.getAvatarUrl = function(uuid, size = 40, userName) {
+    if (config.avatar.provider === 'blessing' && config.avatar.blessingUrl) {
+      const name = userName || uuid;
+      return `${config.avatar.blessingUrl}/avatar/player/${encodeURIComponent(name)}?size=${size}&png`;
+    }
     return `https://mc-heads.net/avatar/${uuid}/${size}`;
   };
 
   // 获取身体头像URL
-  res.locals.getBodyUrl = function(uuid, size = 128) {
+  res.locals.getBodyUrl = function(uuid, size = 128, userName) {
+    if (config.avatar.provider === 'blessing' && config.avatar.blessingUrl) {
+      const name = userName || uuid;
+      return `${config.avatar.blessingUrl}/avatar/player/${encodeURIComponent(name)}?size=${size}&png`;
+    }
     return `https://mc-heads.net/body/${uuid}/${size}`;
+  };
+
+  // 头像配置注入客户端
+  res.locals.avatarConfig = {
+    provider: config.avatar.provider,
+    blessingUrl: config.avatar.blessingUrl
   };
 
   next();

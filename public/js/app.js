@@ -173,7 +173,13 @@ const DarkMode = {
 // ============================================
 
 // 头像URL构造函数（与服务端 getAvatarUrl 保持一致）
-function getAvatarUrl(uuid, size = 40) {
+// 支持 mc-heads.net 和 BlessingSkin 皮肤站，通过 window.__AVATAR_CONFIG__ 切换
+function getAvatarUrl(uuid, size = 40, userName) {
+  const config = window.__AVATAR_CONFIG__ || {};
+  if (config.provider === 'blessing' && config.blessingUrl) {
+    const name = userName || uuid;
+    return `${config.blessingUrl}/avatar/player/${encodeURIComponent(name)}?size=${size}&png`;
+  }
   return `https://mc-heads.net/avatar/${uuid}/${size}`;
 }
 
@@ -240,7 +246,7 @@ const SearchAutocomplete = {
     this.dropdown.innerHTML = players.slice(0, 8).map((player, index) => `
       <a href="/player/${player.UUID}" class="flex items-center px-4 py-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${index === this.selectedIndex ? 'bg-gray-100 dark:bg-gray-700' : ''}"
          data-index="${index}">
-        <img src="${getAvatarUrl(player.UUID, 32)}" alt="${player.userName}" class="h-8 w-8 rounded-full mr-3">
+        <img src="${getAvatarUrl(player.UUID, 32, player.userName)}" alt="${player.userName}" class="h-8 w-8 rounded-full mr-3">
         <div>
           <div class="text-sm font-medium text-gray-900 dark:text-gray-100">${player.userName}</div>
           <div class="text-xs text-gray-500 dark:text-gray-400">${player.online ? '在线' : '离线'}</div>

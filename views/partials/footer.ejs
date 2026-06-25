@@ -35,6 +35,10 @@
   </button>
 
   <!-- Scripts -->
+  <script>
+    // 服务端注入的头像配置
+    window.__AVATAR_CONFIG__ = <%- JSON.stringify(avatarConfig) %>;
+  </script>
   <script src="/js/app.js"></script>
   <script>
     // Mobile menu toggle
