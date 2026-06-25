@@ -37,7 +37,7 @@
   <!-- Scripts -->
   <script>
     // 服务端注入的头像配置
-    window.__AVATAR_CONFIG__ = <%- JSON.stringify(avatarConfig) %>;
+    window.__AVATAR_CONFIG__ = <%- JSON.stringify(typeof avatarConfig !== 'undefined' ? avatarConfig : { provider: 'mc-heads', blessingUrl: '' }) %>;
   </script>
   <script src="/js/app.js"></script>
   <script>
